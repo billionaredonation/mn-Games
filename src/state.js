@@ -41,8 +41,14 @@ export function save() {
   state.player.cityName = state.cityName || null;
   state.player.regionId = state.regionId || null;
 
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
+ try {
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn('Unable to save game state', error);
+  }
 }
+
+
 
 export function getState() {
   return state;
