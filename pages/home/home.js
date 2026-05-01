@@ -2,6 +2,8 @@ import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 import { getCityConfig, normalizeCityId } from '../../src/cities/index.js';
 const V = '33';
+import './home-screen.js';
+
 
 function money(value) {
   return value.toLocaleString('ru-RU') + ' ₴';
