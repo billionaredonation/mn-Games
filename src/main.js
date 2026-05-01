@@ -1,12 +1,7 @@
 import { show } from './router.js';
 import { initRuntime, getState } from './state.js';
 
-const APP_VERSION = '93';
-
-await import(`../pages/welcome1/welcome1.js?v=${APP_VERSION}`);
-await import(`../pages/welcome2/welcome2.js?v=${APP_VERSION}`);
-await import(`../pages/welcome3/welcome3.js?v=${APP_VERSION}`);
-await import(`../pages/home/home.js?v=${APP_VERSION}`);
+const APP_VERSION = '94';
 
 function renderBootError(error) {
   console.error(error);
@@ -22,6 +17,7 @@ function renderBootError(error) {
       padding:20px;
       font-family:Arial,sans-serif;
       white-space:pre-wrap;
+      line-height:1.45;
     ">
       Ошибка запуска:
 
@@ -30,8 +26,18 @@ function renderBootError(error) {
   `;
 }
 
+async function loadScreens() {
+  await import('../pages/welcome1/welcome1.js?v=' + APP_VERSION);
+  await import('../pages/welcome2/welcome2.js?v=' + APP_VERSION);
+  await import('../pages/welcome3/welcome3.js?v=' + APP_VERSION);
+  await import('../pages/home/home.js?v=' + APP_VERSION);
+}
+
 async function boot() {
   try {
+    await loadScreens();
+
+    window.Telegram?.WebApp?.ready?.();
     window.Telegram?.WebApp?.expand?.();
 
     initRuntime();
