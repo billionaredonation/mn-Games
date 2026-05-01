@@ -6,6 +6,8 @@ import '../pages/welcome2/welcome2.js';
 import '../pages/welcome3/welcome3.js';
 import '../pages/home/home-screen.js';
 
+
+
 function renderBootError(error) {
   console.error(error);
 
