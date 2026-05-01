@@ -1,7 +1,5 @@
 import { register, show } from '../../src/router.js';
-import { state, save, getState } from '../../src/state.js';
-import { citiesBase } from '../../src/data/citiesBase.js';
-import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js';
+import { state, save } from '../../src/state.js';
 
 register('welcome2', (root) => {
   root.className = 'page welcome2';
