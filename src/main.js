@@ -4,9 +4,7 @@ import { initRuntime, getState } from './state.js';
 import '../pages/welcome1/welcome1.js';
 import '../pages/welcome2/welcome2.js';
 import '../pages/welcome3/welcome3.js';
-import '../pages/home/home-screen.js';
-
-
+import '../pages/home/home.js';
 
 function renderBootError(error) {
   console.error(error);
@@ -60,5 +58,6 @@ async function boot() {
 }
 
 boot();
+
 
 
