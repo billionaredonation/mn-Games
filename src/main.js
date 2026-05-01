@@ -1,10 +1,12 @@
 import { show } from './router.js';
 import { initRuntime, getState } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=93';
-import '../pages/welcome2/welcome2.js?v=93';
-import '../pages/welcome3/welcome3.js?v=93';
-import '../pages/home/home.js?v=93';
+const APP_VERSION = '93';
+
+await import(`../pages/welcome1/welcome1.js?v=${APP_VERSION}`);
+await import(`../pages/welcome2/welcome2.js?v=${APP_VERSION}`);
+await import(`../pages/welcome3/welcome3.js?v=${APP_VERSION}`);
+await import(`../pages/home/home.js?v=${APP_VERSION}`);
 
 function renderBootError(error) {
   console.error(error);
