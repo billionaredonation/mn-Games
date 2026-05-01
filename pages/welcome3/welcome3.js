@@ -3,9 +3,9 @@ import { state, save, getState } from '../../src/state.js?v=37';
 import { citiesBase } from '../../src/data/citiesBase.js?v=37';
 import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js?v=37';
 
-const MAP_IMG = './UkraineMap.png?v=9';
-const REGIONS_SVG = './ua.svg?v=5';
-const CITY_MAP_VERSION = '33';
+const MAP_IMG = './UkraineMap.png?v=10';
+const REGIONS_SVG = './ua.svg?v=6';
+const CITY_MAP_VERSION = '34';
 const FALLBACK_MAP_SRC = './UkraineMap.png';
 
 const REGION_DATA = {
