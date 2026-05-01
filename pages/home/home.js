@@ -1,7 +1,6 @@
-import { register, show } from '../../src/router.js?v=37';
-import { state, save } from '../../src/state.js?v=37';
-import { getCityConfig, normalizeCityId } from '../../src/cities/index.js?v=1';
-
+import { register, show } from '../../src/router.js';
+import { state, save } from '../../src/state.js';
+import { getCityConfig, normalizeCityId } from '../../src/cities/index.js';
 const V = '33';
 
 function money(value) {
