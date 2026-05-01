@@ -1,0 +1,11 @@
+{
+  "name": "mn-game",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}

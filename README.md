@@ -1,1 +1,1 @@
-# mn-Games
+# Mn-game
