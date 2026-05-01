@@ -8,28 +8,13 @@ function money(value) {
   return value.toLocaleString('ru-RU') + ' грн';
 }
 
-function renderJobs(city) {
-  return city.jobs.map((job) => `
-    <button class="home-job" type="button" data-job-id="${job.id}">
-      <span>
-        <b>${job.title}</b>
-        <small>${job.description}</small>
-      </span>
-      <strong>${money(job.pay)}</strong>
+
+    <button class="home-menu-btn ${id}-btn" id="${id}Btn" type="button">
+      <span class="home-menu-icon">${icon}</span>
+      <span>${label}</span>
     </button>
-  `).join('');
-}
 
-function renderFeature(city) {
-  return `
-    <div class="home-feature">
-      <span>${city.specialty.label}</span>
-      <strong>${city.specialty.value}</strong>
-      <p>${city.specialty.description}</p>
-    </div>
-  `;
-}
-
+function renderMenuButton(id, label, icon) {
 register('home', (root) => {
   root.className = 'page home';
 
