@@ -1,7 +1,7 @@
-import { register, show } from '../../src/router.js?v=37';
-import { state, save, getState } from '../../src/state.js?v=37';
-import { citiesBase } from '../../src/data/citiesBase.js?v=37';
-import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js?v=37';
+import { register, show } from '../../src/router.js';
+import { state, save, getState } from '../../src/state.js';
+import { citiesBase } from '../../src/data/citiesBase.js';
+import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js';
 
 const MAP_IMG = './UkraineMap.png?v=9';
 const REGIONS_SVG = './ua.svg?v=5';
