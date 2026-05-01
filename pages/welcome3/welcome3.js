@@ -7,6 +7,7 @@ const MAP_IMG = './UkraineMap.png?v=9';
 const REGIONS_SVG = './ua.svg?v=5';
 const CITY_MAP_VERSION = '33';
 const FALLBACK_MAP_SRC = './UkraineMap.png';
+const REGIONS_VIEW_BOX = '0 0 1000 669';
 
 const REGION_DATA = {
   UA05: { cityId: 'vinnytsia', cityName: 'Винница' },
@@ -267,6 +268,8 @@ register('welcome3', (root) => {
   let fullRegionElements = [];
   let visualFrame = null;
   let transformFrame = null;
+  let lastVisualRegionId = null;
+  let lastVisualMode = '';
 
   const isTouchDevice =
     window.matchMedia('(pointer: coarse)').matches ||
@@ -432,18 +435,15 @@ register('welcome3', (root) => {
       return;
     }
 
-    getAllRegions().forEach((regionEl) => {
-      if (regionEl.id !== regionInfo.regionId) {
-        return;
-      }
 
-      regionEl.classList.remove('is-click-burst');
-      regionEl.getBoundingClientRect();
-      regionEl.classList.add('is-click-burst');
 
       setTimeout(() => {
         regionEl.classList.remove('is-click-burst');
-      }, 560);
+        regionEl.classList.add('is-click-burst');
+          requestAnimationFrame(() => {
+        regionEl.classList.add('is-click-burst');
+      });
+      }, 460);
     });
   }
 
@@ -455,23 +455,25 @@ register('welcome3', (root) => {
     visualFrame = requestAnimationFrame(() => {
       const allRegions = getAllRegions();
 
-      allRegions.forEach((regionEl) => {
-        regionEl.classList.remove('is-selected', 'is-pending');
-      });
 
       const activeRegion = pendingRegion || selectedRegion;
+      const nextVisualRegionId = activeRegion ? activeRegion.regionId : null;
+      const nextVisualMode = pendingRegion ? 'pending' : selectedRegion ? 'selected' : '';
 
-      allRegions.forEach((regionEl) => {
-        if (!activeRegion || regionEl.id !== activeRegion.regionId) {
-          return;
-        }
 
-        if (pendingRegion) {
-          regionEl.classList.add('is-pending');
-        } else {
-          regionEl.classList.add('is-selected');
+
+        if (nextVisualRegionId !== lastVisualRegionId || nextVisualMode !== lastVisualMode) {
+        allRegions.forEach((regionEl) => {
+          const isActive = regionEl.id === nextVisualRegionId;
+
+
+        regionEl.classList.toggle('is-pending', isActive && nextVisualMode === 'pending');
+        regionEl.classList.toggle('is-selected', isActive && nextVisualMode === 'selected');
+        });
+
+        lastVisualRegionId = nextVisualRegionId;
+        lastVisualMode = nextVisualMode;
         }
-      });
 
       if (selectedRegion) {
         nextBtn.disabled = false;
@@ -752,6 +754,17 @@ register('welcome3', (root) => {
 
     svg.removeAttribute('width');
     svg.removeAttribute('height');
+    svg.removeAttribute('fill');
+    svg.removeAttribute('stroke');
+    svg.removeAttribute('stroke-width');
+
+    const rawViewBox = svg.getAttribute('viewBox') || svg.getAttribute('viewbox') || REGIONS_VIEW_BOX;
+
+    svg.removeAttribute('viewbox');
+    svg.setAttribute('viewBox', rawViewBox);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.setAttribute('focusable', 'false');
+    svg.setAttribute('aria-hidden', 'true');
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
     svg.querySelectorAll('*').forEach((el) => {
@@ -762,10 +775,10 @@ register('welcome3', (root) => {
       el.style.display = 'none';
     });
 
-    const regions = Array.from(svg.querySelectorAll('path[id], polygon[id]'));
+    const regions = Array.from(svg.querySelectorAll('path, polygon'));
 
     regions.forEach((region) => {
-      const hasRegionData = Boolean(REGION_DATA[region.id]);
+       const hasRegionData = Boolean(region.id && REGION_DATA[region.id]);
 
       if (!hasRegionData) {
         region.style.display = 'none';
