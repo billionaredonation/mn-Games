@@ -1,7 +1,10 @@
 import { show } from './router.js';
 import { initRuntime, getState } from './state.js';
 
-const APP_VERSION = '94';
+import '../pages/welcome1/welcome1.js?v=95';
+import '../pages/welcome2/welcome2.js?v=95';
+import '../pages/welcome3/welcome3.js?v=95';
+import '../pages/home/home.js?v=95';
 
 function renderBootError(error) {
   console.error(error);
@@ -26,17 +29,8 @@ function renderBootError(error) {
   `;
 }
 
-async function loadScreens() {
-  await import('../pages/welcome1/welcome1.js?v=' + APP_VERSION);
-  await import('../pages/welcome2/welcome2.js?v=' + APP_VERSION);
-  await import('../pages/welcome3/welcome3.js?v=' + APP_VERSION);
-  await import('../pages/home/home.js?v=' + APP_VERSION);
-}
-
 async function boot() {
   try {
-    await loadScreens();
-
     window.Telegram?.WebApp?.ready?.();
     window.Telegram?.WebApp?.expand?.();
 
@@ -64,4 +58,5 @@ async function boot() {
 }
 
 boot();
+
 
