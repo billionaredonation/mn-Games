@@ -5,7 +5,7 @@ import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 import { normalizeCityId } from '../../src/cities/index.js';
-await import('../home/home.js?v=113');
+await import('../home/home.js?v=115');
 
 const V = '113';
 
