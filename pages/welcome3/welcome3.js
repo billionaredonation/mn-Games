@@ -822,20 +822,17 @@ register('welcome3', (root) => {
     storage.push(path);
   }
 
-  function loadSvgInto(layer, storage, mode) {
-    layer.innerHTML = svgTextCache;
-    storage.length = 0;
+function loadSvgInto(layer, storage, mode) {
+  layer.textContent = '';
+  storage.length = 0;
 
-    const svg = layer.querySelector('svg');
+  const svg = createCleanSvg(mode);
+  layer.appendChild(svg);
 
-    if (!svg) {
-      throw new Error('SVG tag not found');
-    }
-
-    prepareSvg(svg, mode).forEach((path) => {
-      setupRegion(path, storage, mode);
-    });
-  }
+  prepareSvg(svg, mode).forEach((path) => {
+    setupRegion(path, storage, mode);
+  });
+}
 
   function openMap(regionInfo) {
     mapModal.classList.remove('hidden');
@@ -901,6 +898,45 @@ register('welcome3', (root) => {
     show('home');
   });
 
+  function createCleanSvg(mode) {
+  const parser = new DOMParser();
+  const sourceDoc = parser.parseFromString(svgTextCache, 'image/svg+xml');
+  const sourceSvg = sourceDoc.querySelector('svg');
+  const cleanSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+  if (!sourceSvg) {
+    throw new Error('SVG tag not found');
+  }
+
+
+  const rawViewBox = sourceSvg.getAttribute('viewBox') || sourceSvg.getAttribute('viewbox') || REGIONS_VIEW_BOX;
+
+  cleanSvg.setAttribute('viewBox', rawViewBox);
+  cleanSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  cleanSvg.setAttribute('focusable', 'false');
+  cleanSvg.setAttribute('aria-hidden', 'true');
+
+  Object.keys(REGION_DATA).forEach((regionId) => {
+    const sourceRegion = sourceDoc.getElementById(regionId);
+
+    if (!sourceRegion) {
+      return;
+    }
+
+    const region = sourceRegion.cloneNode(true);
+
+    region.removeAttribute('fill');
+    region.removeAttribute('stroke');
+    region.removeAttribute('stroke-width');
+    region.removeAttribute('style');
+
+    cleanSvg.appendChild(region);
+  });
+
+  return cleanSvg;
+}
+
+  
   fullMapViewport.addEventListener('contextmenu', (event) => {
     event.preventDefault();
   });
