@@ -1,10 +1,10 @@
 import { show } from './router.js';
 import { initRemotePlayer, initRuntime, getState } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=107';
-import '../pages/welcome2/welcome2.js?v=107';
-import '../pages/welcome3/welcome3.js?v=107';
-import '../pages/home/home.js?v=107';
+import '../pages/welcome1/welcome1.js?v=108';
+import '../pages/welcome2/welcome2.js?v=108';
+import '../pages/welcome3/welcome3.js?v=108';
+import '../pages/home/home.js?v=108';
 
 function renderBootError(error) {
   console.error(error);
@@ -29,30 +29,36 @@ function renderBootError(error) {
   `;
 }
 
-async function boot() {
+function routeFromState() {
+  const state = getState();
+
+  const nickname = state.nickname || state.player?.nickname;
+  const city = state.city || state.player?.city;
+
+  if (!nickname) {
+    show('welcome1');
+    return;
+  }
+
+  if (!city) {
+    show('welcome3');
+    return;
+  }
+
+  show('home');
+}
+
+function boot() {
   try {
     window.Telegram?.WebApp?.ready?.();
     window.Telegram?.WebApp?.expand?.();
 
     initRuntime();
-    await initRemotePlayer();
+    routeFromState();
 
-    const state = getState();
-
-    const nickname = state.nickname || state.player?.nickname;
-    const city = state.city || state.player?.city;
-
-    if (!nickname) {
-      show('welcome1');
-      return;
-    }
-
-    if (!city) {
-      show('welcome3');
-      return;
-    }
-
-    show('home');
+    initRemotePlayer().then(() => {
+      routeFromState();
+    });
   } catch (error) {
     renderBootError(error);
   }
