@@ -36,3 +36,4 @@ export async function supabaseRequest(path, options = {}) {
 
   return response.json();
 }
+
