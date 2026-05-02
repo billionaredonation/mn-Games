@@ -1,8 +1,22 @@
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
-import { getCityConfig, normalizeCityId } from '../../src/cities/index.js';
+import { normalizeCityId } from '../../src/cities/index.js';
 
-const V = '112';
+const V = '113';
+
+const cityLoaders = {
+  kyiv: () => import('../../src/cities/kyiv/index.js?v=113'),
+  dnipro: () => import('../../src/cities/dnipro/index.js?v=113'),
+  donetsk: () => import('../../src/cities/donetsk/index.js?v=113'),
+  kharkiv: () => import('../../src/cities/kharkiv/index.js?v=113'),
+  luhansk: () => import('../../src/cities/luhansk/index.js?v=113'),
+  lutsk: () => import('../../src/cities/lutsk/index.js?v=113'),
+  lviv: () => import('../../src/cities/lviv/index.js?v=113'),
+  odesa: () => import('../../src/cities/odesa/index.js?v=113'),
+  vinnytsia: () => import('../../src/cities/vinnytsia/index.js?v=113'),
+  zaporizhzhia: () => import('../../src/cities/zaporizhzhia/index.js?v=113'),
+  zhytomyr: () => import('../../src/cities/zhytomyr/index.js?v=113'),
+};
 
 function money(value) {
   return Number(value || 0).toLocaleString('ru-RU') + ' грн';
@@ -18,17 +32,31 @@ function renderJobs(city) {
   `).join('');
 }
 
-register('home', (root) => {
-  const cityId = normalizeCityId(state.city);
-  const city = getCityConfig(cityId);
+async function loadSelectedCity() {
+  const normalizedCityId = normalizeCityId(state.city || 'zaporizhzhia');
+  const loader = cityLoaders[normalizedCityId] || cityLoaders.zaporizhzhia;
 
-  if (state.city !== cityId) {
-    state.city = cityId;
-    save();
-  }
+  const module = await loader();
+  const city = module.city;
 
+  state.city = city.id;
+  save();
+
+  return city;
+}
+
+register('home', async (root) => {
   root.className = 'page home';
+  root.innerHTML = `
+    <section class="home-loading">
+      <h1>Загрузка города...</h1>
+      <p>Подключаем главное меню.</p>
+    </section>
+  `;
 
+  const city = await loadSelectedCity();
+
+  root.dataset.city = city.id;
   root.innerHTML = `
     <section class="home-shell">
       <header class="home-top">
@@ -138,7 +166,7 @@ function showSettings(root, city) {
   setPanel(root, `
     <h2>Настройки</h2>
     <h3>${city.name}</h3>
-    <p>Папка города: src/cities/${city.id}</p>
+    <p>Папка города: src/cities/${city.id}/index.js</p>
     <p>Тип экономики: ${city.economyType}</p>
   `);
 }
