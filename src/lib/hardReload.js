@@ -1,8 +1,8 @@
 export async function hardReloadGame() {
   try {
     if ('caches' in window) {
-      const names = await caches.keys();
-      await Promise.all(names.map((name) => caches.delete(name)));
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
     }
 
     if ('serviceWorker' in navigator) {
