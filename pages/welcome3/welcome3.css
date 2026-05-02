@@ -109,22 +109,37 @@
   transform-origin: center center;
 }
 
+.ukraine-regions-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  transform: translateZ(0);
+  -webkit-tap-highlight-color: transparent;
+}
+
 .ukraine-regions-svg * {
   fill: transparent !important;
   stroke: transparent !important;
   filter: none !important;
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .ukraine-region {
   fill: transparent;
   stroke: transparent;
   stroke-width: 0;
+  outline: none;
   vector-effect: non-scaling-stroke;
+  -webkit-tap-highlight-color: transparent;
   transition:
     fill 0.14s ease,
     opacity 0.14s ease;
+}
+
+.ukraine-region:focus,
+.ukraine-region:focus-visible,
+.ukraine-region:active {
+  outline: none;
 }
 
 .ukraine-region.is-selectable {
@@ -149,33 +164,6 @@
 
 .ukraine-region.is-click-burst {
   animation: none;
-}
-
-@keyframes selectedRegionPulse {
-  0%,
-  100% {
-    stroke-opacity: 0.72;
-    filter: none;
-  }
-  50% {
-    stroke-opacity: 1;
-    filter: none;
-  }
-}
-
-@keyframes regionClickBurst {
-  0% {
-    stroke-width: 0;
-    filter: none;
-  }
-  55% {
-    stroke-width: 0;
-    filter: none;
-  }
-  100% {
-    stroke-width: 0;
-    filter: none;
-  }
 }
 
 .city-selection-box {
@@ -292,17 +280,16 @@
 
 .full-map-content {
   position: absolute;
-  top: 52%;
+  top: 50%;
   left: 50%;
   width: 100%;
   aspect-ratio: 1000 / 669;
-  --regions-x: -8px;
-  --regions-y: -15px;
-  --regions-scale: 0.992;
+  --regions-x: 0px;
+  --regions-y: 0px;
+  --regions-scale: 1;
   transform-origin: center center;
   will-change: transform;
 }
-
 
 .city-preview-card {
   margin-top: 14px;
@@ -367,12 +354,6 @@
   object-fit: contain;
   padding: 3px;
   filter: none;
-}
-
-.ukraine-region:focus,
-.ukraine-region:focus-visible,
-.ukraine-region:active {
-  outline: none;
 }
 
 .city-preview-image.is-square-map {
@@ -546,6 +527,7 @@
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(240%);
   }
