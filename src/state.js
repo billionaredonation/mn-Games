@@ -148,7 +148,7 @@ export function resetState() {
 
 export async function initRemotePlayer() {
   try {
-    const module = await import('./db/playerRepository.js?v=109');
+    const module = await import('./db/playerRepository.js?v=110');
     await module.syncPlayerFromSupabase(state);
     save();
   } catch (error) {
@@ -159,7 +159,7 @@ export async function initRemotePlayer() {
 export function syncPlayerRemote() {
   remoteSyncQueue = remoteSyncQueue
     .then(async () => {
-      const module = await import('./db/playerRepository.js?v=109');
+      const module = await import('./db/playerRepository.js?v=110');
       return module.savePlayerToSupabase(state);
     })
     .catch((error) => {
@@ -168,4 +168,5 @@ export function syncPlayerRemote() {
 
   return remoteSyncQueue;
 }
+
 
