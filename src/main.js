@@ -1,10 +1,10 @@
 import { show } from './router.js';
 import { initRemotePlayer, initRuntime, getState } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=108';
-import '../pages/welcome2/welcome2.js?v=108';
-import '../pages/welcome3/welcome3.js?v=108';
-import '../pages/home/home.js?v=108';
+import '../pages/welcome1/welcome1.js?v=109';
+import '../pages/welcome2/welcome2.js?v=109';
+import '../pages/welcome3/welcome3.js?v=109';
+import '../pages/home/home.js?v=109';
 
 function renderBootError(error) {
   console.error(error);
@@ -58,6 +58,8 @@ function boot() {
 
     initRemotePlayer().then(() => {
       routeFromState();
+    }).catch((error) => {
+      console.warn('Remote sync skipped', error);
     });
   } catch (error) {
     renderBootError(error);
@@ -65,4 +67,5 @@ function boot() {
 }
 
 boot();
+
 
