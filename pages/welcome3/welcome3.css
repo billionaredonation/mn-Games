@@ -298,7 +298,7 @@
   width: 100%;
   aspect-ratio: 1000 / 669;
   --regions-x: -8px;
-  --regions-y: -3px;
+  --regions-y: -10px;
   --regions-scale: 0.992;
   transform-origin: center center;
   will-change: transform;
