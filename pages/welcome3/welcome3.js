@@ -3,8 +3,8 @@ import { state, save, getState } from '../../src/state.js';
 import { citiesBase } from '../../src/data/citiesBase.js';
 import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js';
 
-const MAP_IMG = './UkraineMap.png?v=12';
-const REGIONS_SVG = './ua.svg?v=8';
+const MAP_IMG = './UkraineMap.png?v=13';
+const REGIONS_SVG = './ua.svg?v=9';
 const CITY_MAP_VERSION = '34';
 const FALLBACK_MAP_SRC = './UkraineMap.png';
 const REGIONS_VIEW_BOX = '0 0 1000 669';
