@@ -24,6 +24,8 @@ function money(value) {
 }
 
 function renderJobs(city) {
+  if (!city.jobs || !Array.isArray(city.jobs)) return '';
+
   return city.jobs.map((job) => `
     <button class="home-menu-btn home-job" data-job-id="${job.id}">
       <span class="home-menu-icon">₴</span>
@@ -37,7 +39,7 @@ async function loadSelectedCity() {
   const loader = cityLoaders[normalizedCityId] || cityLoaders.zaporizhzhia;
 
   const module = await loader();
-  const city = module.city;
+  const city = module.city || module.default;
 
   state.city = city.id;
   save();
@@ -78,8 +80,8 @@ register('home', async (root) => {
 
         <div class="home-hud home-hud-top">
           <div class="home-city-title">
-            <span>${city.region}</span>
-            <strong>${city.name}</strong>
+            <span>${city.region || 'Регион'}</span>
+            <strong>${city.name || 'Город'}</strong>
           </div>
 
           <button id="reloadGameBtn" class="home-reset-btn" type="button">
@@ -123,13 +125,13 @@ register('home', async (root) => {
       <main id="homeInfo" class="home-city-panel">
         <div class="home-city-heading">
           <span>Главное меню</span>
-          <h3>${city.tagline}</h3>
+          <h3>${city.tagline || 'Городское меню'}</h3>
         </div>
 
         <div class="home-detail-card">
           <b>Добро пожаловать, ${state.nickname || 'игрок'}.</b>
-          <p>${city.specialty.label}: ${city.specialty.value}</p>
-          <small>${city.specialty.description}</small>
+          <p>${city.specialty?.label || 'Особенность'}: ${city.specialty?.value || 'Базовый старт'}</p>
+          <small>${city.specialty?.description || 'Выбери действие в меню.'}</small>
         </div>
       </main>
     </section>
@@ -154,7 +156,7 @@ register('home', async (root) => {
     const button = event.target.closest('.home-job');
     if (!button) return;
 
-    const job = city.jobs.find((item) => item.id === button.dataset.jobId);
+    const job = city.jobs?.find((item) => item.id === button.dataset.jobId);
     if (job) showJob(root, city, job);
   });
 });
@@ -171,8 +173,8 @@ function showProfile(root, city) {
     </div>
 
     <div class="home-detail-card">
-      <b>${city.profileTitle}</b>
-      <p>${city.profileText}</p>
+      <b>${city.profileTitle || 'Профиль игрока'}</b>
+      <p>${city.profileText || 'Информация о персонаже появится позже.'}</p>
       <small>Стартовый капитал: ${money(city.startMoney)}</small>
     </div>
   `);
@@ -201,7 +203,7 @@ function showJob(root, city, job) {
     <div class="home-detail-card">
       <b>${money(job.pay)} за смену</b>
       <p>${job.description}</p>
-      <small>Бонус города: ${city.specialty.value}</small>
+      <small>Бонус города: ${city.specialty?.value || 'нет'}</small>
     </div>
   `);
 }
@@ -210,13 +212,13 @@ function showHousing(root, city) {
   setPanel(root, `
     <div class="home-city-heading">
       <span>Недвижимость</span>
-      <h3>${city.housing.title}</h3>
+      <h3>${city.housing?.title || 'Недвижимость'}</h3>
     </div>
 
     <div class="home-detail-card">
-      <b>От ${money(city.housing.minPrice)}</b>
-      <p>${city.housing.description}</p>
-      <small>${city.housing.bonus}</small>
+      <b>От ${money(city.housing?.minPrice)}</b>
+      <p>${city.housing?.description || 'Раздел недвижимости будет добавлен позже.'}</p>
+      <small>${city.housing?.bonus || 'Пока без бонусов.'}</small>
     </div>
   `);
 }
@@ -261,7 +263,7 @@ function showSettings(root, city) {
     <div class="home-detail-card">
       <b>Техническая информация</b>
       <p>Папка города: src/cities/${city.id}/index.js</p>
-      <small>Тип экономики: ${city.economyType}</small>
+      <small>Тип экономики: ${city.economyType || 'basic'}</small>
     </div>
   `);
 }
