@@ -805,8 +805,10 @@ register('welcome3', (root) => {
       path.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
+        path.blur();
 
         if (!gesture.moved) {
+          path.blur();
           choosePendingRegion(regionInfo);
         }
       });
