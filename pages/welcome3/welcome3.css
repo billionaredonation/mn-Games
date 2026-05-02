@@ -293,12 +293,12 @@
 
 .full-map-content {
   position: absolute;
-  top: 50%;
+  top: 52%;
   left: 50%;
   width: 100%;
   aspect-ratio: 1000 / 669;
   --regions-x: -8px;
-  --regions-y: -10px;
+  --regions-y: -15px;
   --regions-scale: 0.992;
   transform-origin: center center;
   will-change: transform;
