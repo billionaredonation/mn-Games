@@ -1,12 +1,14 @@
-import { register, show } from '../../src/router.js?v=37';
-import { state, save, getState } from '../../src/state.js?v=37';
-import { citiesBase } from '../../src/data/citiesBase.js?v=37';
-import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js?v=37';
+import { register, show } from '../../src/router.js';
+import { state, save, getState } from '../../src/state.js';
+import { citiesBase } from '../../src/data/citiesBase.js';
+import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js';
 
-const MAP_IMG = './UkraineMap.png?v=9';
-const REGIONS_SVG = './ua.svg?v=5';
-const CITY_MAP_VERSION = '33';
+const MAP_IMG = './UkraineMap.png?v=12';
+const REGIONS_SVG = './ua.svg?v=8';
+const CITY_MAP_VERSION = '34';
 const FALLBACK_MAP_SRC = './UkraineMap.png';
+const REGIONS_VIEW_BOX = '0 0 1000 669';
+const MAX_ZOOM = 3.4;
 
 const REGION_DATA = {
   UA05: { cityId: 'vinnytsia', cityName: 'Винница' },
@@ -84,32 +86,32 @@ const CITY_ID_ALIASES = {
 };
 
 const CITY_META = {
-  vinnytsia: { title: 'Вінниця', subtitle: 'Затишне місто з легкою промисловістю та агро-стартапами.', jobs: ['Агробізнес', 'Пекарня', 'Сервіс'] },
-  lutsk: { title: 'Луцьк', subtitle: 'Тихий обласний центр з деревообробкою та ІТ-аутсорсом.', jobs: ['Лісопилка', 'Склад', 'ІТ-аутсорс'] },
-  luhansk: { title: 'Луганськ', subtitle: 'Колишній вуглепром — нові можливості для виробництва.', jobs: ['Шахта', 'Ремонт техніки', 'Логістика'] },
-  dnipro: { title: 'Дніпро', subtitle: 'Логістика, виробництво, склади та міський бізнес.', jobs: ['Логістика', 'Склад', 'СТО'] },
-  donetsk: { title: 'Донецьк', subtitle: 'Металургія й машинобудування у стадії відновлення.', jobs: ['Шахта', 'Метзавод', 'СТО'] },
-  zhytomyr: { title: 'Житомир', subtitle: 'Видобуток каменю, переробка деревини та логістика.', jobs: ['Карʼєр', 'Пилорама', 'Склад'] },
-  uzhhorod: { title: 'Ужгород', subtitle: 'Прикордоння, виноробство та туристичні сервіси.', jobs: ['Виноробня', 'Готель', 'Кавʼярня'] },
-  zaporizhzhia: { title: 'Запоріжжя', subtitle: 'Індустріальний регіон із металургією та машинобудуванням.', jobs: ['Завод', 'Металургія', 'СТО'] },
-  'ivano-frankivsk': { title: 'Івано-Франківськ', subtitle: 'Туризм, лісова промисловість та креативні індустрії.', jobs: ['Туризм', 'Кавʼярня', 'Коворкінг'] },
-  kyiv: { title: 'Київ', subtitle: 'Столиця: офіси, сервіс, таксі, доставка та високий темп.', jobs: ['Офіс', 'Курʼєр', 'Таксі'] },
-  kropyvnytskyi: { title: 'Кропивницький', subtitle: 'Аграрний хаб, ремонти техніки та зернові склади.', jobs: ['Елеватор', 'СТО', 'Сільгосптехніка'] },
-  crimea: { title: 'Крим', subtitle: 'Курорти, виноробство, порти й логістика.', jobs: ['Готель', 'Порт', 'Виноробня'] },
-  lviv: { title: 'Львів', subtitle: 'Туризм, сервіс, кавʼярні, готелі та стабільний розвиток.', jobs: ['Кавʼярня', 'Готель', 'Курʼєр'] },
-  mykolaiv: { title: 'Миколаїв', subtitle: 'Верфі, порти та агро-логістика.', jobs: ['Верф', 'Порт', 'Склад'] },
-  odesa: { title: 'Одеса', subtitle: 'Порт, торгівля, туризм, таксі та швидкий обіг грошей.', jobs: ['Порт', 'Таксі', 'Торгівля'] },
-  poltava: { title: 'Полтава', subtitle: 'Нафта, агро-переробка, затишний сервіс.', jobs: ['Нафтобаза', 'Млин', 'Кафе'] },
-  rivne: { title: 'Рівне', subtitle: 'Бурштин, текстиль та лісопереробка.', jobs: ['Текстиль', 'Лісопилка', 'Сервіс'] },
-  sumy: { title: 'Суми', subtitle: 'Хімпром, машинобудування та агро.', jobs: ['Завод', 'СТО', 'Агробізнес'] },
-  ternopil: { title: 'Тернопіль', subtitle: 'Студентське місто з ІТ-курсом та агро-ринком.', jobs: ['ІТ-аутсорс', 'Агро', 'Сервіс'] },
-  kharkiv: { title: 'Харків', subtitle: 'ІТ, машини, освіта та наукові кластери.', jobs: ['Завод', 'Університет', 'IT-аутсорс'] },
-  kherson: { title: 'Херсон', subtitle: 'Суднобудування, агро-експорт, морські ворота.', jobs: ['Верф', 'Порт', 'Агро'] },
-  khmelnytskyi: { title: 'Хмельницький', subtitle: 'Оптові ринки, агро та енергетика малих ГЕС.', jobs: ['Ринок', 'Агро', 'Сервіс'] },
-  cherkasy: { title: 'Черкаси', subtitle: 'Цукор, деревообробка та логістика по Дніпру.', jobs: ['Цукроварня', 'Логістика', 'СТО'] },
-  chernihiv: { title: 'Чернігів', subtitle: 'Пиво, сільське господарство та ІТ-ініціативи.', jobs: ['Пивзавод', 'Агро', 'ІТ-аутсорс'] },
-  chernivtsi: { title: 'Чернівці', subtitle: 'Туризм, крафтові кавʼярні та креативні індустрії.', jobs: ['Кавʼярня', 'Готель', 'Сувеніри'] },
-  default: { title: 'Регіон України', subtitle: 'Стартова зона для розвитку персонажа.', jobs: ['Підробіток', 'Доставка', 'Склад'] }
+  vinnytsia: { title: 'Винница', subtitle: 'Спокойный старт: агро, сервис и легкая промышленность.', jobs: ['Агро', 'Пекарня', 'Сервис'] },
+  lutsk: { title: 'Луцк', subtitle: 'Деревообработка, склады и тихий региональный сервис.', jobs: ['Лесопилка', 'Склад', 'Сервис'] },
+  luhansk: { title: 'Луганск', subtitle: 'Промышленный регион для восстановления производства.', jobs: ['Шахта', 'Ремонт', 'Логистика'] },
+  dnipro: { title: 'Днепр', subtitle: 'Логистика, производство, склады и городской бизнес.', jobs: ['Логистика', 'Склад', 'СТО'] },
+  donetsk: { title: 'Донецк', subtitle: 'Металлургия и тяжелое производство в стадии восстановления.', jobs: ['Шахта', 'Метзавод', 'СТО'] },
+  zhytomyr: { title: 'Житомир', subtitle: 'Камень, деревообработка и удобная логистика.', jobs: ['Карьер', 'Пилорама', 'Склад'] },
+  uzhhorod: { title: 'Ужгород', subtitle: 'Граница, туризм, вино и сервисный бизнес.', jobs: ['Винодельня', 'Отель', 'Кафе'] },
+  zaporizhzhia: { title: 'Запорожье', subtitle: 'Индустриальный регион с заводами и металлом.', jobs: ['Завод', 'Металлургия', 'СТО'] },
+  'ivano-frankivsk': { title: 'Ивано-Франковск', subtitle: 'Туризм, лесная промышленность и креативные сервисы.', jobs: ['Туризм', 'Кофейня', 'Коворкинг'] },
+  kyiv: { title: 'Киев', subtitle: 'Столица: офисы, доставка, такси и высокий темп.', jobs: ['Офис', 'Курьер', 'Такси'] },
+  kropyvnytskyi: { title: 'Кропивницкий', subtitle: 'Аграрный хаб, техника и зерновые склады.', jobs: ['Элеватор', 'СТО', 'Агро'] },
+  crimea: { title: 'Крым', subtitle: 'Курорты, порты, вино и туристический бизнес.', jobs: ['Отель', 'Порт', 'Винодельня'] },
+  lviv: { title: 'Львов', subtitle: 'Туризм, кофе, сервис и стабильный рост.', jobs: ['Кофейня', 'Отель', 'Курьер'] },
+  mykolaiv: { title: 'Николаев', subtitle: 'Верфи, портовая экономика и агро-логистика.', jobs: ['Верфь', 'Порт', 'Склад'] },
+  odesa: { title: 'Одесса', subtitle: 'Порт, торговля, туризм, такси и быстрый оборот денег.', jobs: ['Порт', 'Такси', 'Торговля'] },
+  poltava: { title: 'Полтава', subtitle: 'Нефть, агро-переработка и затишный сервис.', jobs: ['Нефтобаза', 'Мельница', 'Кафе'] },
+  rivne: { title: 'Ровно', subtitle: 'Текстиль, лесопереработка и сервисный старт.', jobs: ['Текстиль', 'Лесопилка', 'Сервис'] },
+  sumy: { title: 'Сумы', subtitle: 'Химпром, машиностроение и агро-бизнес.', jobs: ['Завод', 'СТО', 'Агро'] },
+  ternopil: { title: 'Тернополь', subtitle: 'Студенческий город с сервисом и агро-рынком.', jobs: ['IT-аутсорс', 'Агро', 'Сервис'] },
+  kharkiv: { title: 'Харьков', subtitle: 'IT, машины, образование и производственные кластеры.', jobs: ['Завод', 'Университет', 'IT'] },
+  kherson: { title: 'Херсон', subtitle: 'Судостроение, агро-экспорт и морские ворота.', jobs: ['Верфь', 'Порт', 'Агро'] },
+  khmelnytskyi: { title: 'Хмельницкий', subtitle: 'Оптовые рынки, агро и городская торговля.', jobs: ['Рынок', 'Агро', 'Сервис'] },
+  cherkasy: { title: 'Черкассы', subtitle: 'Сахар, деревообработка и логистика по Днепру.', jobs: ['Сахар', 'Логистика', 'СТО'] },
+  chernihiv: { title: 'Чернигов', subtitle: 'Пиво, сельское хозяйство и сервисные инициативы.', jobs: ['Пивзавод', 'Агро', 'Сервис'] },
+  chernivtsi: { title: 'Черновцы', subtitle: 'Туризм, крафтовые кофейни и творческие сервисы.', jobs: ['Кофейня', 'Отель', 'Сувениры'] },
+  default: { title: 'Регион Украины', subtitle: 'Стартовая зона для развития персонажа.', jobs: ['Подработка', 'Доставка', 'Склад'] }
 };
 
 function normalizeCityId(cityId) {
@@ -160,7 +162,17 @@ function getCityMeta(regionInfo) {
     devaluation: getDevaluation(raw) + ' %',
     stateAssets: getStateAssetsShare(raw) + ' %',
     jobs: staticMeta.jobs || CITY_META.default.jobs,
-    economy: 'Розраховується у грі.'
+    economy: 'Рассчитывается в игре.'
+  });
+}
+
+function preloadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = src;
   });
 }
 
@@ -259,14 +271,16 @@ register('welcome3', (root) => {
   const confirmCityBtn = root.querySelector('#confirmCityBtn');
   const fullMapViewport = root.querySelector('#fullMapViewport');
   const fullMapContent = root.querySelector('#fullMapContent');
+  const compactMap = root.querySelector('.compact-map');
 
   let svgTextCache = '';
   let selectedRegion = null;
   let pendingRegion = null;
-  let compactRegionElements = [];
   let fullRegionElements = [];
   let visualFrame = null;
   let transformFrame = null;
+  let lastVisualRegionId = null;
+  let lastVisualMode = '';
 
   const isTouchDevice =
     window.matchMedia('(pointer: coarse)').matches ||
@@ -279,11 +293,9 @@ register('welcome3', (root) => {
   };
 
   const pointers = new Map();
-
   const gesture = {
     mode: 'none',
     moved: false,
-    isTouch: false,
     startX: 0,
     startY: 0,
     baseX: 0,
@@ -306,6 +318,14 @@ register('welcome3', (root) => {
     };
   }
 
+  function getAllRegions() {
+    return fullRegionElements;
+  }
+
+  function setMainText(text) {
+    citySelectionText.textContent = text;
+  }
+
   function renderCityPreview(regionInfo) {
     cityPreviewCard.classList.remove('is-refreshed');
 
@@ -319,7 +339,7 @@ register('welcome3', (root) => {
     }
 
     const meta = getCityMeta(regionInfo);
-    const imageSrc = meta.image || CITY_META.default.image;
+    const imageSrc = meta.image || cityMapSrc(regionInfo.cityId);
 
     cityPreviewCard.innerHTML = `
       <div class="city-preview-top">
@@ -397,16 +417,6 @@ register('welcome3', (root) => {
     });
   }
 
-  function preloadImage(src) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-
-      img.onload = resolve;
-      img.onerror = reject;
-      img.src = src;
-    });
-  }
-
   async function preloadAssets() {
     const svgResponse = await fetch(REGIONS_SVG);
 
@@ -419,16 +429,8 @@ register('welcome3', (root) => {
     svgTextCache = await svgResponse.text();
   }
 
-  function setMainText(text) {
-    citySelectionText.textContent = text;
-  }
-
-  function getAllRegions() {
-    return compactRegionElements.concat(fullRegionElements);
-  }
-
   function animateRegionChoice(regionInfo) {
-    if (!regionInfo) {
+    if (!regionInfo || isTouchDevice) {
       return;
     }
 
@@ -438,12 +440,14 @@ register('welcome3', (root) => {
       }
 
       regionEl.classList.remove('is-click-burst');
-      regionEl.getBoundingClientRect();
-      regionEl.classList.add('is-click-burst');
 
-      setTimeout(() => {
+      requestAnimationFrame(() => {
+        regionEl.classList.add('is-click-burst');
+      });
+
+      window.setTimeout(() => {
         regionEl.classList.remove('is-click-burst');
-      }, 560);
+      }, 460);
     });
   }
 
@@ -454,24 +458,21 @@ register('welcome3', (root) => {
 
     visualFrame = requestAnimationFrame(() => {
       const allRegions = getAllRegions();
-
-      allRegions.forEach((regionEl) => {
-        regionEl.classList.remove('is-selected', 'is-pending');
-      });
-
       const activeRegion = pendingRegion || selectedRegion;
+      const nextVisualRegionId = activeRegion ? activeRegion.regionId : null;
+      const nextVisualMode = pendingRegion ? 'pending' : selectedRegion ? 'selected' : '';
 
-      allRegions.forEach((regionEl) => {
-        if (!activeRegion || regionEl.id !== activeRegion.regionId) {
-          return;
-        }
+      if (nextVisualRegionId !== lastVisualRegionId || nextVisualMode !== lastVisualMode) {
+        allRegions.forEach((regionEl) => {
+          const isActive = regionEl.id === nextVisualRegionId;
 
-        if (pendingRegion) {
-          regionEl.classList.add('is-pending');
-        } else {
-          regionEl.classList.add('is-selected');
-        }
-      });
+          regionEl.classList.toggle('is-pending', isActive && nextVisualMode === 'pending');
+          regionEl.classList.toggle('is-selected', isActive && nextVisualMode === 'selected');
+        });
+
+        lastVisualRegionId = nextVisualRegionId;
+        lastVisualMode = nextVisualMode;
+      }
 
       if (selectedRegion) {
         nextBtn.disabled = false;
@@ -483,13 +484,8 @@ register('welcome3', (root) => {
         setMainText('Город пока не выбран');
       }
 
-      if (pendingRegion) {
-        confirmCityBtn.disabled = false;
-        confirmCityBtn.classList.add('active');
-      } else {
-        confirmCityBtn.disabled = true;
-        confirmCityBtn.classList.remove('active');
-      }
+      confirmCityBtn.disabled = !pendingRegion;
+      confirmCityBtn.classList.toggle('active', Boolean(pendingRegion));
 
       visualFrame = null;
     });
@@ -504,12 +500,7 @@ register('welcome3', (root) => {
   }
 
   function resetPreview() {
-    if (pendingRegion) {
-      renderCityPreview(pendingRegion);
-      return;
-    }
-
-    renderCityPreview(null);
+    renderCityPreview(pendingRegion || null);
   }
 
   function choosePendingRegion(regionInfo) {
@@ -518,7 +509,6 @@ register('welcome3', (root) => {
     }
 
     pendingRegion = regionInfo;
-
     animateRegionChoice(regionInfo);
     renderCityPreview(regionInfo);
     updateVisualState();
@@ -543,26 +533,6 @@ register('welcome3', (root) => {
     updateVisualState();
   }
 
-  function openMap(regionInfo) {
-    mapModal.classList.remove('hidden');
-
-    pendingRegion = null;
-    pointers.clear();
-
-    gesture.mode = 'none';
-    gesture.moved = false;
-    gesture.isTouch = false;
-
-    renderCityPreview(null);
-    resetTransform();
-
-    if (regionInfo) {
-      choosePendingRegion(regionInfo);
-    } else {
-      updateVisualState();
-    }
-  }
-
   function applyTransform() {
     if (transformFrame) {
       return;
@@ -580,12 +550,11 @@ register('welcome3', (root) => {
     view.x = 0;
     view.y = 0;
     view.scale = isTouchDevice ? 1.42 : 1.55;
-
     applyTransform();
   }
 
   function clampView() {
-    view.scale = Math.max(1, Math.min(3.4, view.scale));
+    view.scale = Math.max(1, Math.min(MAX_ZOOM, view.scale));
 
     const maxOffset = 460 * view.scale;
 
@@ -600,7 +569,6 @@ register('welcome3', (root) => {
   function startPan(pointer) {
     gesture.mode = 'pan';
     gesture.moved = false;
-    gesture.isTouch = pointer.pointerType === 'touch' || pointer.pointerType === 'pen';
     gesture.startX = pointer.clientX;
     gesture.startY = pointer.clientY;
     gesture.baseX = view.x;
@@ -616,7 +584,6 @@ register('welcome3', (root) => {
 
     gesture.mode = 'pinch';
     gesture.moved = false;
-    gesture.isTouch = pts.some((point) => point.pointerType === 'touch' || point.pointerType === 'pen');
     gesture.startDistance = distance(pts[0], pts[1]);
     gesture.baseScale = view.scale;
     gesture.baseX = view.x;
@@ -699,17 +666,19 @@ register('welcome3', (root) => {
       view.scale = gesture.baseScale * scaleRatio;
       view.x = gesture.baseX + (midX - gesture.startX);
       view.y = gesture.baseY + (midY - gesture.startY);
-
-      clampView();
-
       gesture.moved = true;
 
+      clampView();
       applyTransform();
     }
   }
 
   function onPointerUp(event) {
     pointers.delete(event.pointerId);
+
+    if (fullMapViewport.releasePointerCapture) {
+      fullMapViewport.releasePointerCapture(event.pointerId);
+    }
 
     if (pointers.size === 1) {
       const remainingPointer = Array.from(pointers.values())[0];
@@ -725,55 +694,59 @@ register('welcome3', (root) => {
 
     if (pointers.size === 0) {
       gesture.mode = 'none';
-      gesture.isTouch = false;
-    }
-
-    if (fullMapViewport.releasePointerCapture) {
-      fullMapViewport.releasePointerCapture(event.pointerId);
     }
   }
 
   function onWheel(event) {
     event.preventDefault();
 
-    if (event.deltaY > 0) {
-      view.scale -= 0.12;
-    } else {
-      view.scale += 0.12;
-    }
+    view.scale += event.deltaY > 0 ? -0.12 : 0.12;
 
     clampView();
     applyTransform();
   }
 
   function prepareSvg(svg, mode) {
-    svg.classList.add('ukraine-regions-svg');
-    svg.classList.add(mode);
-
+    svg.classList.add('ukraine-regions-svg', mode);
     svg.removeAttribute('width');
     svg.removeAttribute('height');
+    svg.removeAttribute('fill');
+    svg.removeAttribute('stroke');
+    svg.removeAttribute('stroke-width');
+    svg.style.fill = 'none';
+    svg.style.stroke = 'none';
+
+    const rawViewBox = svg.getAttribute('viewBox') || svg.getAttribute('viewbox') || REGIONS_VIEW_BOX;
+
+    svg.removeAttribute('viewbox');
+    svg.setAttribute('viewBox', rawViewBox);
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.setAttribute('focusable', 'false');
+    svg.setAttribute('aria-hidden', 'true');
 
     svg.querySelectorAll('*').forEach((el) => {
       el.style.pointerEvents = 'none';
     });
 
-    svg.querySelectorAll('#points, #label_points, text, circle, rect, line, polyline, ellipse').forEach((el) => {
+    svg.querySelectorAll('text, circle, rect, line, polyline, ellipse, #points, #label_points').forEach((el) => {
       el.style.display = 'none';
     });
 
-    const regions = Array.from(svg.querySelectorAll('path[id], polygon[id]'));
+    const regions = Array.from(svg.querySelectorAll('path, polygon'));
 
     regions.forEach((region) => {
-      const hasRegionData = Boolean(REGION_DATA[region.id]);
+      const isKnownRegion = Boolean(region.id && REGION_DATA[region.id]);
 
-      if (!hasRegionData) {
-        region.style.display = 'none';
-        return;
+      region.style.display = isKnownRegion ? '' : 'none';
+      region.style.pointerEvents = isKnownRegion ? 'all' : 'none';
+
+      if (isKnownRegion) {
+        region.removeAttribute('fill');
+        region.removeAttribute('stroke');
+        region.removeAttribute('stroke-width');
+        region.style.fill = '';
+        region.style.stroke = '';
       }
-
-      region.style.display = '';
-      region.style.pointerEvents = 'all';
     });
 
     return regions.filter((region) => REGION_DATA[region.id]);
@@ -790,26 +763,15 @@ register('welcome3', (root) => {
     }
 
     path.classList.add('is-selectable');
-
     path.dataset.cityId = regionInfo.cityId;
     path.dataset.cityName = regionInfo.cityName;
     path.style.pointerEvents = 'all';
-
-    if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
-      selectedRegion = regionInfo;
-    }
-
     path.setAttribute('tabindex', '0');
     path.setAttribute('role', 'button');
     path.setAttribute('aria-label', regionInfo.cityName);
 
-    if (mode === 'compact') {
-      path.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        openMap(regionInfo);
-      });
+    if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
+      selectedRegion = regionInfo;
     }
 
     if (mode === 'full') {
@@ -821,9 +783,7 @@ register('welcome3', (root) => {
       }
 
       path.addEventListener('pointerdown', (event) => {
-        const isMouseLeft = event.pointerType === 'mouse' && event.button === 0;
-
-        if (isMouseLeft) {
+        if (event.pointerType === 'mouse' && event.button === 0) {
           event.preventDefault();
           event.stopPropagation();
         }
@@ -839,7 +799,6 @@ register('welcome3', (root) => {
 
         event.preventDefault();
         event.stopPropagation();
-
         choosePendingRegion(regionInfo);
       });
 
@@ -847,11 +806,9 @@ register('welcome3', (root) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (gesture.moved) {
-          return;
+        if (!gesture.moved) {
+          choosePendingRegion(regionInfo);
         }
-
-        choosePendingRegion(regionInfo);
       });
 
       path.addEventListener('keydown', (event) => {
@@ -867,6 +824,7 @@ register('welcome3', (root) => {
 
   function loadSvgInto(layer, storage, mode) {
     layer.innerHTML = svgTextCache;
+    storage.length = 0;
 
     const svg = layer.querySelector('svg');
 
@@ -874,56 +832,60 @@ register('welcome3', (root) => {
       throw new Error('SVG tag not found');
     }
 
-    const regions = prepareSvg(svg, mode);
-
-    regions.forEach((path) => {
+    prepareSvg(svg, mode).forEach((path) => {
       setupRegion(path, storage, mode);
     });
+  }
+
+  function openMap(regionInfo) {
+    mapModal.classList.remove('hidden');
+    pendingRegion = null;
+    pointers.clear();
+    gesture.mode = 'none';
+    gesture.moved = false;
+
+    renderCityPreview(null);
+    resetTransform();
+
+    if (regionInfo) {
+      choosePendingRegion(regionInfo);
+    } else {
+      updateVisualState();
+    }
   }
 
   async function initRegions() {
     try {
       await preloadAssets();
 
-      loadSvgInto(compactRegionsLayer, compactRegionElements, 'compact');
+      compactRegionsLayer.innerHTML = '';
       loadSvgInto(fullRegionsLayer, fullRegionElements, 'full');
-
       updateVisualState();
 
       loader.classList.add('is-hidden');
 
-      setTimeout(() => {
+      window.setTimeout(() => {
         loader.remove();
       }, 280);
     } catch (error) {
       console.error(error);
-
       loader.classList.add('is-hidden');
 
-      compactRegionsLayer.innerHTML = `
-        <div class="map-error">Ошибка загрузки SVG</div>
-      `;
-
-      fullRegionsLayer.innerHTML = `
-        <div class="map-error">Ошибка загрузки SVG</div>
-      `;
-
+      compactRegionsLayer.innerHTML = '<div class="map-error">Ошибка загрузки SVG</div>';
+      fullRegionsLayer.innerHTML = '<div class="map-error">Ошибка загрузки SVG</div>';
       setMainText('Ошибка загрузки карты областей');
     }
   }
 
   openMapBtn.addEventListener('click', () => openMap());
+  compactMap.addEventListener('click', () => openMap());
 
   closeMapBtn.addEventListener('click', () => {
     mapModal.classList.add('hidden');
-
     pendingRegion = null;
     pointers.clear();
-
     gesture.mode = 'none';
     gesture.moved = false;
-    gesture.isTouch = false;
-
     renderCityPreview(null);
     updateVisualState();
   });
