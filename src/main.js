@@ -1,10 +1,9 @@
 import { show } from './router.js';
 import { initRemotePlayer, initRuntime, getState } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=109';
-import '../pages/welcome2/welcome2.js?v=109';
-import '../pages/welcome3/welcome3.js?v=109';
-import '../pages/home/home.js?v=109';
+import '../pages/welcome1/welcome1.js?v=110';
+import '../pages/welcome2/welcome2.js?v=110';
+import '../pages/welcome3/welcome3.js?v=110';
 
 function renderBootError(error) {
   console.error(error);
@@ -29,6 +28,11 @@ function renderBootError(error) {
   `;
 }
 
+async function showHome() {
+  await import('../pages/home/home.js?v=110');
+  show('home');
+}
+
 function routeFromState() {
   const state = getState();
 
@@ -45,7 +49,10 @@ function routeFromState() {
     return;
   }
 
-  show('home');
+  showHome().catch((error) => {
+    console.error(error);
+    show('welcome3');
+  });
 }
 
 function boot() {
@@ -67,5 +74,6 @@ function boot() {
 }
 
 boot();
+
 
 
