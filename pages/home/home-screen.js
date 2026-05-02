@@ -1,8 +1,9 @@
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 import { getCityConfig, normalizeCityId } from '../../src/cities/index.js';
+import { ensureGameState } from '../../src/game/backend.js';
 
-const V = '34';
+const V = '35';
 
 function money(value) {
   return value.toLocaleString('ru-RU') + ' грн';
@@ -19,7 +20,6 @@ function renderMenuButton(id, label, icon) {
 
 register('home', (root) => {
   root.className = 'page home';
-
   const normalizedCityId = normalizeCityId(state.city);
   const city = getCityConfig(normalizedCityId);
 
@@ -28,6 +28,10 @@ register('home', (root) => {
     save();
   }
 
+  ensureGameState(state, city);
+  save();
+
+  
   root.dataset.city = city.id;
   root.innerHTML = `
     <main class="home-gameplay">
@@ -49,6 +53,7 @@ register('home', (root) => {
           ${renderMenuButton('profile', 'Профиль', 'П')}
           ${renderMenuButton('skills', 'Навыки', 'Н')}
           ${renderMenuButton('settings', 'Настройки', '⚙')}
+          ${renderCommonMenu(state)}
         </nav>
       </section>
 
