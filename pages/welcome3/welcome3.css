@@ -297,12 +297,13 @@
   left: 50%;
   width: 100%;
   aspect-ratio: 1000 / 669;
-  --regions-x: 0px;
-  --regions-y: 0px;
-  --regions-scale: 1;
+  --regions-x: -8px;
+  --regions-y: 4px;
+  --regions-scale: 0.992;
   transform-origin: center center;
   will-change: transform;
 }
+
 
 .city-preview-card {
   margin-top: 14px;
