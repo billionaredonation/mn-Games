@@ -3,7 +3,7 @@ import { initRemotePlayer, initRuntime, getState } from './state.js';
 
 import '../pages/welcome1/welcome1.js?v=111';
 import '../pages/welcome2/welcome2.js?v=111';
-import '../pages/welcome3/welcome3.js?v=113';
+import '../pages/welcome3/welcome3.js?v=114';
 
 function renderBootError(error) {
   console.error(error);
@@ -29,7 +29,7 @@ function renderBootError(error) {
 }
 
 async function showHome() {
-  await import('../pages/home/home.js?v=115');
+  await import('../pages/home/home.js?v=116');
   show('home');
 }
 
