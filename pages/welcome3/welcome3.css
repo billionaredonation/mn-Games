@@ -113,6 +113,8 @@
   fill: transparent !important;
   stroke: transparent !important;
   filter: none !important;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ukraine-region {
@@ -365,6 +367,12 @@
   object-fit: contain;
   padding: 3px;
   filter: none;
+}
+
+.ukraine-region:focus,
+.ukraine-region:focus-visible,
+.ukraine-region:active {
+  outline: none;
 }
 
 .city-preview-image.is-square-map {
