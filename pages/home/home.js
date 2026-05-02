@@ -1,100 +1,78 @@
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 import { getCityConfig, normalizeCityId } from '../../src/cities/index.js';
-const V = '33';
-import './home-screen.js';
 
+const V = '112';
 
 function money(value) {
-  return value.toLocaleString('ru-RU') + ' ₴';
+  return Number(value || 0).toLocaleString('ru-RU') + ' грн';
 }
 
 function renderJobs(city) {
   return city.jobs.map((job) => `
-    <button class="home-job" type="button" data-job-id="${job.id}">
-      <span>
-        <b>${job.title}</b>
-        <small>${job.description}</small>
-      </span>
-      <strong>${money(job.pay)}</strong>
+    <button class="home-job" data-job-id="${job.id}">
+      <strong>${job.title}</strong>
+      <span>${job.description}</span>
+      <b>${money(job.pay)} / смена</b>
     </button>
   `).join('');
 }
 
-function renderFeature(city) {
-  return `
-    <div class="home-feature">
-      <span>${city.specialty.label}</span>
-      <strong>${city.specialty.value}</strong>
-      <p>${city.specialty.description}</p>
-    </div>
-  `;
-}
-
 register('home', (root) => {
-  root.className = 'page home';
+  const cityId = normalizeCityId(state.city);
+  const city = getCityConfig(cityId);
 
-  const normalizedCityId = normalizeCityId(state.city);
-  const city = getCityConfig(normalizedCityId);
-
-  if (state.city !== normalizedCityId) {
-    state.city = normalizedCityId;
+  if (state.city !== cityId) {
+    state.city = cityId;
     save();
   }
 
+  root.className = 'page home';
+
   root.innerHTML = `
-    <div class="home-top">
-      <div>
-        <h2>${city.name}</h2>
-        <p>Добро пожаловать, ${state.nickname || 'игрок'}.</p>
+    <section class="home-shell">
+      <header class="home-top">
+        <div>
+          <div class="home-region">${city.region}</div>
+          <h1>${city.name}</h1>
+        </div>
+
+        <button id="resetBtn" class="home-reset">Сброс</button>
+      </header>
+
+      <div class="home-map-card">
+        <img class="city-map-image" src="${city.map}?v=${V}" alt="${city.name}">
       </div>
 
-      <button class="home-reset-btn" id="resetBtn" type="button">Сбросить</button>
-    </div>
+      <nav class="home-menu">
+        <button id="profileBtn">Профиль</button>
+        <button id="jobsBtn">Работы</button>
+        <button id="houseBtn">Дома</button>
+        <button id="settingsBtn">Настройки</button>
+      </nav>
 
-    <div class="city-map-shell">
-      <img class="city-map-image" src="${city.map}?v=${V}" alt="${city.name}" />
-
-      <button class="map-icon profile-icon" id="profileBtn" type="button">
-        <span class="map-icon-emoji">П</span>
-        <span class="map-icon-label">Профиль</span>
-      </button>
-
-      <button class="map-icon jobs-icon" id="jobsBtn" type="button">
-        <span class="map-icon-emoji">Р</span>
-        <span class="map-icon-label">Работы</span>
-      </button>
-
-      <button class="map-icon house-icon" id="houseBtn" type="button">
-        <span class="map-icon-emoji">Д</span>
-        <span class="map-icon-label">Дома</span>
-      </button>
-
-      <button class="map-icon settings-icon" id="settingsBtn" type="button">
-        <span class="map-icon-emoji">Н</span>
-        <span class="map-icon-label">Настройки</span>
-      </button>
-    </div>
-
-    <section class="home-city-panel" id="homeInfo">
-      <div class="home-city-heading">
-        <span>${city.region}</span>
+      <main id="homeInfo" class="home-info">
+        <h2>Главное меню</h2>
         <h3>${city.tagline}</h3>
-      </div>
+        <p>Добро пожаловать, ${state.nickname || 'игрок'}.</p>
 
-      ${renderFeature(city)}
+        <div class="home-feature">
+          <strong>${city.specialty.label}: ${city.specialty.value}</strong>
+          <p>${city.specialty.description}</p>
+        </div>
 
-      <div class="home-jobs-list">
-        ${renderJobs(city)}
-      </div>
+        <h3>Работы города</h3>
+        <div class="home-jobs">
+          ${renderJobs(city)}
+        </div>
+      </main>
     </section>
   `;
 
-  const cityMapImage = root.querySelector('.city-map-image');
-
-  cityMapImage.addEventListener('error', () => {
-    cityMapImage.onerror = null;
-    cityMapImage.src = './UkraineMap.png?v=' + V;
+  const img = root.querySelector('.city-map-image');
+  img.addEventListener('error', () => {
+    img.onerror = null;
+    img.src = './UkraineMap.png?v=' + V;
   });
 
   root.querySelector('#resetBtn').onclick = resetProgress;
@@ -105,96 +83,71 @@ register('home', (root) => {
 
   root.querySelector('#homeInfo').addEventListener('click', (event) => {
     const button = event.target.closest('.home-job');
-
     if (!button) return;
 
     const job = city.jobs.find((item) => item.id === button.dataset.jobId);
-
-    if (job) {
-      showJob(root, city, job);
-    }
+    if (job) showJob(root, city, job);
   });
 });
-
-function showJob(root, city, job) {
-  setPanel(root, `
-    <div class="home-city-heading">
-      <span>Работа</span>
-      <h3>${job.title}</h3>
-    </div>
-    <div class="home-detail-card">
-      <b>${money(job.pay)} за смену</b>
-      <p>${job.description}</p>
-      <small>Бонус города: ${city.specialty.value}</small>
-    </div>
-  `);
-}
-
-function showProfile(root, city) {
-  setPanel(root, `
-    <div class="home-city-heading">
-      <span>Профиль</span>
-      <h3>${state.nickname || 'Игрок'} в городе ${city.name}</h3>
-    </div>
-    <div class="home-detail-card">
-      <b>${city.profileTitle}</b>
-      <p>${city.profileText}</p>
-      <small>Стартовый капитал: ${money(city.startMoney)}</small>
-    </div>
-  `);
-}
-
-function showJobs(root, city) {
-  setPanel(root, `
-    <div class="home-city-heading">
-      <span>Работы города</span>
-      <h3>${city.name}: ${city.jobs.length} варианта заработка</h3>
-    </div>
-    <div class="home-jobs-list">
-      ${renderJobs(city)}
-    </div>
-  `);
-}
-
-function showHousing(root, city) {
-  setPanel(root, `
-    <div class="home-city-heading">
-      <span>Недвижимость</span>
-      <h3>${city.housing.title}</h3>
-    </div>
-    <div class="home-detail-card">
-      <b>От ${money(city.housing.minPrice)}</b>
-      <p>${city.housing.description}</p>
-      <small>${city.housing.bonus}</small>
-    </div>
-  `);
-}
-
-function showSettings(root, city) {
-  setPanel(root, `
-    <div class="home-city-heading">
-      <span>Городской модуль</span>
-      <h3>${city.name}</h3>
-    </div>
-    <div class="home-detail-card">
-      <b>Папка: src/cities/${city.id}</b>
-      <p>В этой папке теперь лежит отдельный конфиг города. Дальше сюда можно добавлять свои магазины, работы, события, цены и правила.</p>
-      <small>Текущий тип экономики: ${city.economyType}</small>
-    </div>
-  `);
-}
 
 function setPanel(root, html) {
   root.querySelector('#homeInfo').innerHTML = html;
 }
 
+function showProfile(root, city) {
+  setPanel(root, `
+    <h2>Профиль</h2>
+    <h3>${state.nickname || 'Игрок'} в городе ${city.name}</h3>
+    <p>${city.profileTitle}</p>
+    <p>${city.profileText}</p>
+    <p><strong>Стартовый капитал:</strong> ${money(city.startMoney)}</p>
+  `);
+}
+
+function showJobs(root, city) {
+  setPanel(root, `
+    <h2>Работы города</h2>
+    <h3>${city.name}: ${city.jobs.length} варианта заработка</h3>
+    <div class="home-jobs">
+      ${renderJobs(city)}
+    </div>
+  `);
+}
+
+function showJob(root, city, job) {
+  setPanel(root, `
+    <h2>Работа</h2>
+    <h3>${job.title}</h3>
+    <p><strong>${money(job.pay)} за смену</strong></p>
+    <p>${job.description}</p>
+    <p>Бонус города: ${city.specialty.value}</p>
+  `);
+}
+
+function showHousing(root, city) {
+  setPanel(root, `
+    <h2>Недвижимость</h2>
+    <h3>${city.housing.title}</h3>
+    <p><strong>От ${money(city.housing.minPrice)}</strong></p>
+    <p>${city.housing.description}</p>
+    <p>${city.housing.bonus}</p>
+  `);
+}
+
+function showSettings(root, city) {
+  setPanel(root, `
+    <h2>Настройки</h2>
+    <h3>${city.name}</h3>
+    <p>Папка города: src/cities/${city.id}</p>
+    <p>Тип экономики: ${city.economyType}</p>
+  `);
+}
+
 function resetProgress() {
   localStorage.removeItem('mn-game-state');
-
   state.nickname = null;
   state.city = null;
   state.cityName = null;
   state.regionId = null;
-
   show('welcome1');
 }
