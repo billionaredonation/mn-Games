@@ -1,5 +1,5 @@
 import { register, show } from '../../src/router.js';
-import { state, save } from '../../src/state.js';
+import { state, save, syncPlayerRemote } from '../../src/state.js';
 
 register('welcome2', (root) => {
   root.className = 'page welcome2';
@@ -62,17 +62,9 @@ register('welcome2', (root) => {
   function validateNickname() {
     const value = input.value.trim();
 
-    if (!value) {
-      return setInvalid('');
-    }
-
-    if (value.length < 3) {
-      return setInvalid('Ник должен быть минимум 3 буквы');
-    }
-
-    if (value.length > 8) {
-      return setInvalid('Ник должен быть максимум 8 букв');
-    }
+    if (!value) return setInvalid('');
+    if (value.length < 3) return setInvalid('Ник должен быть минимум 3 буквы');
+    if (value.length > 8) return setInvalid('Ник должен быть максимум 8 букв');
 
     if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]+$/.test(value)) {
       return setInvalid('Ник должен содержать только буквы');
@@ -90,12 +82,11 @@ register('welcome2', (root) => {
   });
 
   nextBtn.addEventListener('click', () => {
-    if (!validateNickname()) {
-      return;
-    }
+    if (!validateNickname()) return;
 
     state.nickname = input.value.trim();
     save();
+    syncPlayerRemote();
 
     show('welcome3');
   });
