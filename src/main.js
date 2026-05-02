@@ -1,10 +1,10 @@
 import { show } from './router.js';
-import { initRuntime, getState } from './state.js';
+import { initRemotePlayer, initRuntime, getState } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=102';
-import '../pages/welcome2/welcome2.js?v=102';
-import '../pages/welcome3/welcome3.js?v=108';
-import '../pages/home/home.js?v=101';
+import '../pages/welcome1/welcome1.js?v=107';
+import '../pages/welcome2/welcome2.js?v=107';
+import '../pages/welcome3/welcome3.js?v=107';
+import '../pages/home/home.js?v=107';
 
 function renderBootError(error) {
   console.error(error);
@@ -35,6 +35,7 @@ async function boot() {
     window.Telegram?.WebApp?.expand?.();
 
     initRuntime();
+    await initRemotePlayer();
 
     const state = getState();
 
@@ -58,3 +59,4 @@ async function boot() {
 }
 
 boot();
+
