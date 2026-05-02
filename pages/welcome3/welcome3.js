@@ -1,5 +1,5 @@
 import { register, show } from '../../src/router.js';
-import { state, save, getState } from '../../src/state.js';
+import { state, save, getState, syncPlayerRemote } from '../../src/state.js';
 import { citiesBase } from '../../src/data/citiesBase.js';
 import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js';
 
@@ -233,7 +233,7 @@ register('welcome3', (root) => {
           </div>
 
           <button class="close-map-btn" id="closeMapBtn" type="button" aria-label="Закрыть карту">
-            ×
+            x
           </button>
         </div>
 
@@ -527,6 +527,7 @@ register('welcome3', (root) => {
     state.regionId = selectedRegion.regionId;
 
     save();
+    syncPlayerRemote();
 
     mapModal.classList.add('hidden');
     renderCityPreview(null);
@@ -706,6 +707,43 @@ register('welcome3', (root) => {
     applyTransform();
   }
 
+  function createCleanSvg(mode) {
+    const parser = new DOMParser();
+    const sourceDoc = parser.parseFromString(svgTextCache, 'image/svg+xml');
+    const sourceSvg = sourceDoc.querySelector('svg');
+    const cleanSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    if (!sourceSvg) {
+      throw new Error('SVG tag not found');
+    }
+
+    const rawViewBox = sourceSvg.getAttribute('viewBox') || sourceSvg.getAttribute('viewbox') || REGIONS_VIEW_BOX;
+
+    cleanSvg.setAttribute('viewBox', rawViewBox);
+    cleanSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    cleanSvg.setAttribute('focusable', 'false');
+    cleanSvg.setAttribute('aria-hidden', 'true');
+
+    Object.keys(REGION_DATA).forEach((regionId) => {
+      const sourceRegion = sourceDoc.getElementById(regionId);
+
+      if (!sourceRegion) {
+        return;
+      }
+
+      const region = sourceRegion.cloneNode(true);
+
+      region.removeAttribute('fill');
+      region.removeAttribute('stroke');
+      region.removeAttribute('stroke-width');
+      region.removeAttribute('style');
+
+      cleanSvg.appendChild(region);
+    });
+
+    return cleanSvg;
+  }
+
   function prepareSvg(svg, mode) {
     svg.classList.add('ukraine-regions-svg', mode);
     svg.removeAttribute('width');
@@ -799,13 +837,13 @@ register('welcome3', (root) => {
 
         event.preventDefault();
         event.stopPropagation();
+        path.blur();
         choosePendingRegion(regionInfo);
       });
 
       path.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        path.blur();
 
         if (!gesture.moved) {
           path.blur();
@@ -824,17 +862,17 @@ register('welcome3', (root) => {
     storage.push(path);
   }
 
-function loadSvgInto(layer, storage, mode) {
-  layer.textContent = '';
-  storage.length = 0;
+  function loadSvgInto(layer, storage, mode) {
+    layer.textContent = '';
+    storage.length = 0;
 
-  const svg = createCleanSvg(mode);
-  layer.appendChild(svg);
+    const svg = createCleanSvg(mode);
+    layer.appendChild(svg);
 
-  prepareSvg(svg, mode).forEach((path) => {
-    setupRegion(path, storage, mode);
-  });
-}
+    prepareSvg(svg, mode).forEach((path) => {
+      setupRegion(path, storage, mode);
+    });
+  }
 
   function openMap(regionInfo) {
     mapModal.classList.remove('hidden');
@@ -900,45 +938,6 @@ function loadSvgInto(layer, storage, mode) {
     show('home');
   });
 
-  function createCleanSvg(mode) {
-  const parser = new DOMParser();
-  const sourceDoc = parser.parseFromString(svgTextCache, 'image/svg+xml');
-  const sourceSvg = sourceDoc.querySelector('svg');
-  const cleanSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
-  if (!sourceSvg) {
-    throw new Error('SVG tag not found');
-  }
-
-
-  const rawViewBox = sourceSvg.getAttribute('viewBox') || sourceSvg.getAttribute('viewbox') || REGIONS_VIEW_BOX;
-
-  cleanSvg.setAttribute('viewBox', rawViewBox);
-  cleanSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  cleanSvg.setAttribute('focusable', 'false');
-  cleanSvg.setAttribute('aria-hidden', 'true');
-
-  Object.keys(REGION_DATA).forEach((regionId) => {
-    const sourceRegion = sourceDoc.getElementById(regionId);
-
-    if (!sourceRegion) {
-      return;
-    }
-
-    const region = sourceRegion.cloneNode(true);
-
-    region.removeAttribute('fill');
-    region.removeAttribute('stroke');
-    region.removeAttribute('stroke-width');
-    region.removeAttribute('style');
-
-    cleanSvg.appendChild(region);
-  });
-
-  return cleanSvg;
-}
-
-  
   fullMapViewport.addEventListener('contextmenu', (event) => {
     event.preventDefault();
   });
@@ -951,3 +950,5 @@ function loadSvgInto(layer, storage, mode) {
 
   initRegions();
 });
+
+
