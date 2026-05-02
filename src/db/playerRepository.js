@@ -1,5 +1,5 @@
 import { supabaseRequest } from './supabaseClient.js';
-import { getTelegramUser } from '../telegram/telegramUser.js';
+import { getTelegramUser } from '../telegram/User.js';
 
 function normalizePlayerRow(row) {
   if (!row) {
