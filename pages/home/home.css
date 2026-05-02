@@ -291,3 +291,28 @@
   }
 }
 
+.home-reset-btn {
+  cursor: pointer;
+}
+
+.home-reset-btn:hover,
+.home-menu-btn:hover {
+  filter: brightness(1.08);
+}
+
+.home-reset-btn:active,
+.home-menu-btn:active {
+  transform: scale(0.97);
+}
+
+.home-inline-menu {
+  position: static;
+  width: 100%;
+  transform: none;
+  margin-top: 10px;
+}
+
+.home-job {
+  text-align: center;
+}
+
