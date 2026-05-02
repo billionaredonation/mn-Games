@@ -929,13 +929,19 @@ register('welcome3', (root) => {
 
   confirmCityBtn.addEventListener('click', confirmRegion);
 
-  nextBtn.addEventListener('click', () => {
+  nextBtn.addEventListener('click', async () => {
     if (!selectedRegion) {
       alert('Сначала выбери город на карте');
       return;
     }
 
-    show('home');
+    try {
+      await import('../home/home.js?v=110');
+      show('home');
+    } catch (error) {
+      console.error(error);
+      alert('Главное меню еще не загружено. Проверь файлы pages/home.');
+    }
   });
 
   fullMapViewport.addEventListener('contextmenu', (event) => {
