@@ -29,7 +29,7 @@ function renderBootError(error) {
 }
 
 async function showHome() {
-  await import('../pages/home/home.js?v=113');
+  await import('../pages/home/home.js?v=114');
   show('home');
 }
 
