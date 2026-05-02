@@ -109,12 +109,10 @@
   transform-origin: center center;
 }
 
-.ukraine-regions-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  overflow: hidden;
-  transform: translateZ(0);
+.ukraine-regions-svg * {
+  fill: transparent !important;
+  stroke: transparent !important;
+  filter: none !important;
 }
 
 .ukraine-region {
@@ -131,21 +129,20 @@
   cursor: pointer;
 }
 
-.full .ukraine-region.is-selectable:hover,
 .full .ukraine-region.is-pending,
 .compact .ukraine-region.is-pending {
-  fill: rgba(255,255,255,0.12);
-  stroke: rgba(255,255,255,0.92);
-  stroke-width: 1.4;
-  filter: none;
+  fill: rgba(255,255,255,0.12) !important;
+  stroke: rgba(255,255,255,0.92) !important;
+  stroke-width: 1.4 !important;
+  filter: none !important;
 }
 
 .ukraine-region.is-selected {
-  fill: rgba(255,255,255,0.16);
-  stroke: #fff;
-  stroke-width: 1.7;
-  filter: none;
-  animation: none;
+  fill: rgba(255,255,255,0.16) !important;
+  stroke: #fff !important;
+  stroke-width: 1.7 !important;
+  filter: none !important;
+  animation: none !important;
 }
 
 .ukraine-region.is-click-burst {
