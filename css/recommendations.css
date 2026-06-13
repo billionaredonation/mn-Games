@@ -1,0 +1,21 @@
+.mock-media {
+  position: relative;
+  min-height: 320px;
+  overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.32), transparent 8rem),
+    linear-gradient(135deg, rgba(139, 92, 255, 0.72), rgba(255, 79, 216, 0.38));
+}
+
+.mock-media--blue {
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.30), transparent 8rem),
+    linear-gradient(135deg, rgba(49, 208, 255, 0.62), rgba(139, 92, 255, 0.34));
+}
+
+.mock-media--dark {
+  background:
+    radial-gradient(circle at 65% 25%, rgba(255, 255, 255, 0.22), transparent 8rem),
+    linear-gradient(135deg, rgba(15, 15, 26, 1), rgba(139, 92, 255, 0.35), rgba(255, 79, 216, 0.18));
+}
