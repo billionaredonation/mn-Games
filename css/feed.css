@@ -1,0 +1,23 @@
+.feed {
+  display: grid;
+  gap: 16px;
+}
+
+.empty {
+  padding: 34px 22px;
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+
+.empty strong {
+  display: block;
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.empty p {
+  max-width: 440px;
+  margin: 10px auto 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
