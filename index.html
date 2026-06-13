@@ -4,112 +4,239 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Private Drop — 18+</title>
+  <title>NOVA Feed — Social Landing</title>
   <meta
     name="description"
-    content="Закрытый Telegram-раздел с контентом 18+. Только для совершеннолетних пользователей."
+    content="Соцсетевой landing-demo с лентой, профилем, постами и новостным блоком."
   />
-
-  <meta property="og:title" content="Private Drop — 18+" />
-  <meta property="og:description" content="Закрытый Telegram-раздел. Доступ только 18+." />
-  <meta property="og:type" content="website" />
 
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <div class="hero__glow hero__glow--one"></div>
-      <div class="hero__glow hero__glow--two"></div>
-
-      <div class="hero__content">
-        <div class="badge">
-          <span class="badge__dot"></span>
-          18+ private content
-        </div>
-
-        <h1 class="hero__title">
-          Закрытый Telegram-дроп без лишнего шума
-        </h1>
-
-        <p class="hero__text">
-          Нативный приватный раздел с контентом для совершеннолетних.
-          Без регистрации, без форм, без лишних шагов — только переход в Telegram.
-        </p>
-
-        <div class="warning">
-          <strong>Важно:</strong>
-          продолжая, вы подтверждаете, что вам есть 18 лет и вы переходите добровольно.
-        </div>
-
-        <div class="actions">
-          <button class="button button--primary" id="enterBtn" type="button">
-            Мне есть 18 — перейти
-          </button>
-
-          <button class="button button--ghost" id="leaveBtn" type="button">
-            Выйти
-          </button>
-        </div>
-
-        <p class="small">
-          Содержимое доступно только для совершеннолетних. Запрещённый, незаконный,
-          несогласованный и пиратский контент не поддерживается.
-        </p>
-      </div>
-
-      <div class="phone-card" aria-hidden="true">
-        <div class="phone-card__top">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-
-        <div class="phone-card__body">
-          <div class="preview preview--big"></div>
-          <div class="preview-row">
-            <div class="preview"></div>
-            <div class="preview"></div>
-          </div>
-          <div class="tg-pill">
-            <span class="tg-pill__icon">↗</span>
-            Telegram
-          </div>
+  <div class="app-shell">
+    <aside class="sidebar sidebar--left">
+      <div class="brand">
+        <div class="brand__mark">N</div>
+        <div>
+          <strong>NOVA</strong>
+          <span>private social</span>
         </div>
       </div>
-    </section>
 
-    <section class="info">
-      <article class="info-card">
-        <h2>Без лишней архитектуры</h2>
-        <p>
-          Статический сайт: HTML, CSS и JS. Никакой базы данных, backend,
-          авторизации или API.
-        </p>
-      </article>
+      <nav class="nav">
+        <button class="nav__item nav__item--active" type="button" data-page="home">
+          <span>⌂</span>
+          Главная
+        </button>
 
-      <article class="info-card">
-        <h2>Один главный путь</h2>
-        <p>
-          Пользователь видит предупреждение 18+, нажимает кнопку и переходит
-          в Telegram.
-        </p>
-      </article>
+        <button class="nav__item" type="button" data-page="profile">
+          <span>◉</span>
+          Профиль
+        </button>
 
-      <article class="info-card">
-        <h2>Заточено под мобилку</h2>
-        <p>
-          Быстрая страница для трафика из TikTok, Shorts, Reels и других
-          коротких форматов.
-        </p>
-      </article>
-    </section>
+        <button class="nav__item" type="button" data-page="news">
+          <span>✦</span>
+          Новости
+        </button>
 
-    <footer class="footer">
-      <span>© <span id="year"></span> Private Drop</span>
-      <span>18+ only</span>
-    </footer>
-  </main>
+        <button class="nav__item" type="button" data-page="saved">
+          <span>◇</span>
+          Сохранённое
+        </button>
+      </nav>
+
+      <div class="profile-mini">
+        <div class="avatar avatar--me">D</div>
+        <div>
+          <strong>Donation</strong>
+          <span>@owner_mode</span>
+        </div>
+      </div>
+
+      <button class="post-button" type="button">
+        Создать пост
+      </button>
+    </aside>
+
+    <main class="feed">
+      <header class="mobile-header">
+        <div class="brand brand--mobile">
+          <div class="brand__mark">N</div>
+          <strong>NOVA</strong>
+        </div>
+
+        <button class="mobile-menu" type="button" id="mobileMenuBtn">
+          ☰
+        </button>
+      </header>
+
+      <section class="hero-card">
+        <div class="hero-card__text">
+          <p class="eyebrow">Private social landing</p>
+          <h1>Лента, которая выглядит как продукт, а не как шаблон за 3 копейки.</h1>
+          <p>
+            Демо-страница под вайб соцсети: посты, профиль, новости, активность,
+            кнопки и mobile-first интерфейс.
+          </p>
+        </div>
+
+        <div class="hero-card__stat">
+          <strong id="liveUsers">248</strong>
+          <span>online now</span>
+        </div>
+      </section>
+
+      <section class="stories" aria-label="Сторис">
+        <button class="story story--add" type="button">
+          <span>+</span>
+          <small>Добавить</small>
+        </button>
+
+        <button class="story" type="button">
+          <span class="avatar avatar--pink">A</span>
+          <small>Aurora</small>
+        </button>
+
+        <button class="story" type="button">
+          <span class="avatar avatar--blue">K</span>
+          <small>Kent</small>
+        </button>
+
+        <button class="story" type="button">
+          <span class="avatar avatar--green">M</span>
+          <small>Market</small>
+        </button>
+
+        <button class="story" type="button">
+          <span class="avatar avatar--gold">X</span>
+          <small>X-feed</small>
+        </button>
+      </section>
+
+      <section class="composer">
+        <div class="avatar avatar--me">D</div>
+
+        <button class="composer__fake-input" type="button">
+          Что нового, Donation?
+        </button>
+
+        <button class="composer__send" type="button">
+          Пост
+        </button>
+      </section>
+
+      <section class="posts" id="posts"></section>
+    </main>
+
+    <aside class="sidebar sidebar--right">
+      <section class="profile-card">
+        <div class="profile-card__cover"></div>
+
+        <div class="profile-card__body">
+          <div class="avatar avatar--large avatar--me">D</div>
+
+          <h2>Donation</h2>
+          <p>@owner_mode</p>
+
+          <div class="profile-card__stats">
+            <div>
+              <strong>12.8K</strong>
+              <span>views</span>
+            </div>
+
+            <div>
+              <strong>421</strong>
+              <span>followers</span>
+            </div>
+
+            <div>
+              <strong>37</strong>
+              <span>drops</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="widget">
+        <div class="widget__head">
+          <h2>Новости</h2>
+          <button type="button">Все</button>
+        </div>
+
+        <div class="news-list">
+          <article class="news-item">
+            <span>01</span>
+            <div>
+              <strong>Новый приватный дроп</strong>
+              <p>Посты обновлены 12 минут назад</p>
+            </div>
+          </article>
+
+          <article class="news-item">
+            <span>02</span>
+            <div>
+              <strong>Telegram traffic</strong>
+              <p>Короткие видео снова дают лучший вход</p>
+            </div>
+          </article>
+
+          <article class="news-item">
+            <span>03</span>
+            <div>
+              <strong>Landing v2</strong>
+              <p>Соцсетевой формат повышает доверие</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="widget">
+        <div class="widget__head">
+          <h2>Тренды</h2>
+        </div>
+
+        <div class="tags">
+          <span>#private</span>
+          <span>#telegram</span>
+          <span>#drop</span>
+          <span>#social</span>
+          <span>#afterdark</span>
+        </div>
+      </section>
+    </aside>
+
+    <nav class="bottom-nav">
+      <button class="bottom-nav__item bottom-nav__item--active" type="button">
+        ⌂
+        <span>Главная</span>
+      </button>
+
+      <button class="bottom-nav__item" type="button">
+        ✦
+        <span>Новости</span>
+      </button>
+
+      <button class="bottom-nav__item" type="button">
+        ◉
+        <span>Профиль</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer__panel">
+      <div class="mobile-drawer__head">
+        <strong>Меню</strong>
+        <button type="button" id="closeDrawerBtn">×</button>
+      </div>
+
+      <button type="button">Главная</button>
+      <button type="button">Профиль</button>
+      <button type="button">Новости</button>
+      <button type="button">Сохранённое</button>
+      <button type="button">Telegram</button>
+    </div>
+  </div>
 
   <script src="./main.js"></script>
 </body>
