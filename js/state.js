@@ -1,17 +1,11 @@
 export const appState = {
   currentFeed: "mine",
-
   selectedFile: null,
-
   user: {
     name: "Donation",
     username: "@owner",
-    avatar: "D",
-  },
-
-  economy: {
-    signal: 100,
-  },
+    avatar: "D"
+  }
 };
 
 export function setCurrentFeed(feedName) {
